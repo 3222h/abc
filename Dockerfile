@@ -71,6 +71,16 @@ ENV LANG=en_US.UTF-8
 COPY autostart /etc/xdg/autostart/
 
 
+RUN apt-get update \
+    && apt-get install -y dbus libsecret-1-0 libgbm1 \
+    && apt-get clean \
+    && apt --reinstall install -y fuse \
+    && rm -rf /var/lib/apt/lists/*
+
+ # Install Xarchiver for file extraction
+RUN apt-get update && apt-get install -y \
+xarchiver \
+&& rm -rf /var/lib/apt/lists/*   
 
 # Add Packages (with dependencies)
 RUN apt-get update \
