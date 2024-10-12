@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Exec=bash -c "if [ -s .10 ]; then windows-10;windows-10;xfwm4;xfce4-panel --restart; else echo 10 > .10 ; windows-10;xfwm4 ; fi"
+Name=Windows 10
+Comment=Autostart Windows 10 at login
