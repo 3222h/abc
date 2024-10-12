@@ -1,35 +1,76 @@
-# Base image
-FROM ashu930559/nomachine-ubuntu-desktop:ch
+FROM ubuntu:focal
+SHELL ["/usr/bin/bash", "-c"]
+ENV LANG=en_US.UTF-8
+ENV HOSTNAME="focal"
 
-# Remove NoMachine and clean up
-RUN apt-get remove --purge -y nomachine && \
-    rm -rf /usr/NX /etc/NXserver.cfg && \
-    apt-get autoremove -y && \
-    apt-get update -q && \
-    apt-get upgrade -y
+# Configure system and apt optimizations
+RUN set -xe \
+    && echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
+    && echo 'exit 101' >> /usr/sbin/policy-rc.d \
+    && chmod +x /usr/sbin/policy-rc.d \
+    && dpkg-divert --local --rename --add /sbin/initctl \
+    && cp -a /usr/sbin/policy-rc.d /sbin/initctl \
+    && sed -i 's/^exit.*/exit 0/' /sbin/initctl \
+    && echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup \
+    && echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/docker-clean \
+    && echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/docker-clean \
+    && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean \
+    && echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/docker-no-languages \
+    && echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes \
+    && echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggests
 
-# Remove nxserver.sh
-RUN rm -f /nxserver.sh
+##    
+RUN mkdir -p /run/systemd && echo 'docker' > /run/systemd/container
 
-# Upgrade packages
-RUN apt-get update -q \
-    && apt-get upgrade -y \
-    && apt-get autoclean \
-    && apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/*
+# Install required packages
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
+    dbus-x11 \
+    git \
+    locales \
+    pavucontrol \
+    pulseaudio \
+    pulseaudio-utils \
+    sudo \
+    x11-xserver-utils \
+    xfce4 \
+    xfce4-goodies \
+    neofetch \
+    python3 \
+    nano \
+    vim \
+    htop \
+    cups \
+    wget \
+    curl \
+    software-properties-common \
+    xfce4-pulseaudio-plugin \
+    xubuntu-icon-theme \
+    && echo Done
 
-# Add XFCE4
-RUN apt-get update -q \
-    && apt-get install -y --no-install-recommends \
-        xfce4-session \
-        xfce4-panel \
-        xfdesktop4 \
-        dbus-x11 \
-        xterm \
-        thunar \
-    && apt-get autoclean \
-    && apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/*
+# Install Kali Undercover (Windows 10 theme)
+RUN wget http://archive.kali.org/kali/pool/main/k/kali-undercover/kali-undercover_2023.4.2_all.deb \
+    && apt install -y ./kali-undercover_2023.4.2_all.deb \
+    && rm -rf kali-undercover_2023.4.2_all.deb \
+    && mv /usr/bin/kali-undercover /usr/bin/windows-10 \
+    && rm -rf /usr/share/applications/kali-undercover.desktop
+
+# Copy the background image
+COPY xfce-stripes.png /usr/share/backgrounds/xfce/xfce-stripes.png
+
+
+##
+# PulseAudio autospawn configuration
+RUN sed -i -E 's/^; autospawn =.*/autospawn = yes/' /etc/pulse/client.conf \
+    && [ -f /etc/pulse/client.conf.d/00-disable-autospawn.conf ] && sed -i -E 's/^(autospawn=.*)/# \1/' /etc/pulse/client.conf.d/00-disable-autospawn.conf || : \
+    && locale-gen en_US.UTF-8
+    
+#
+# Set environment variables
+ENV LANG=en_US.UTF-8
+
+COPY autostart /etc/xdg/autostart/
+
+
 
 # Add Packages (with dependencies)
 RUN apt-get update \
