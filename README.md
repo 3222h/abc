@@ -11,6 +11,10 @@ docker build -t abc .
 
 ### 4. run code
 ```bash
-docker run -p 3000:3000 --rm -it --privileged abc
+docker run --restart always -p 3000:3000 --privileged --name nomashine abc
 ```
 
+### 4. run code
+```bash
+docker run -p 3000:3000 --rm -it --privileged abc
+```
