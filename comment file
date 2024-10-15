@@ -49,3 +49,40 @@ startretries=3
 programs=check_vnc,novnc
 priority=10
 
+
+
+
+---------------------------
+# Set environment variable for the supervisor config path
+ENV CONF_PATH /etc/supervisor/conf.d/supervisord.conf
+
+# Update supervisor configuration
+RUN echo '[supervisord]' >> $CONF_PATH \
+    && echo 'nodaemon=true' >> $CONF_PATH \
+    && echo 'user=root' >> $CONF_PATH \
+    \
+    # Configure VNC (check_vnc equivalent)
+    && echo '[program:check_vnc]' >> $CONF_PATH \
+    && echo 'command=/bin/bash -c "if pgrep Xvnc > /dev/null; then pkill Xvnc; fi && gosu '$USER' /opt/TurboVNC/bin/vncserver :0 -fg -wm xfce4-session -geometry 1366x667 -depth 24"' >> $CONF_PATH \
+    && echo 'autorestart=true' >> $CONF_PATH \
+    && echo 'stderr_logfile=/var/log/supervisor/vnc.err.log' >> $CONF_PATH \
+    && echo 'stdout_logfile=/var/log/supervisor/vnc.out.log' >> $CONF_PATH \
+    && echo 'user='$USER >> $CONF_PATH \
+    && echo 'startretries=3' >> $CONF_PATH \
+    \
+    # Configure noVNC
+    && echo '[program:novnc]' >> $CONF_PATH \
+    && echo 'command=gosu '$USER' bash -c "websockify --web=/usr/lib/novnc 3000 localhost:5900"' >> $CONF_PATH \
+    && echo 'autorestart=true' >> $CONF_PATH \
+    && echo 'stderr_logfile=/var/log/supervisor/novnc.err.log' >> $CONF_PATH \
+    && echo 'stdout_logfile=/var/log/supervisor/novnc.out.log' >> $CONF_PATH \
+    && echo 'user='$USER >> $CONF_PATH \
+    && echo 'startretries=3' >> $CONF_PATH \
+    \
+    # Group the two programs together
+    && echo '[group:vnc_and_web]' >> $CONF_PATH \
+    && echo 'programs=check_vnc,novnc' >> $CONF_PATH \
+    && echo 'priority=10' >> $CONF_PATH
+
+# Set entry point to supervisord
+ENTRYPOINT ["/usr/bin/supervisord"]
