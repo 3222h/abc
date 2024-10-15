@@ -19,3 +19,33 @@ fi
 
 # Start the main process (supervisord)
 exec "$@"
+
+
+
+-----------------------------
+
+
+[supervisord]
+nodaemon=true
+user=root
+
+[program:check_vnc]
+command=/bin/bash -c "if pgrep Xvnc > /dev/null; then pkill Xvnc; fi && gosu ubuntu /opt/TurboVNC/bin/vncserver :0 -fg -wm xfce4-session -geometry 1366x667 -depth 24"
+autorestart=true
+stderr_logfile=/var/log/supervisor/vnc.err.log
+stdout_logfile=/var/log/supervisor/vnc.out.log
+user=ubuntu
+startretries=3
+
+[program:novnc]
+command=gosu ubuntu bash -c "websockify --web=/usr/lib/novnc 3000 localhost:5900"
+autorestart=true
+stderr_logfile=/var/log/supervisor/novnc.err.log
+stdout_logfile=/var/log/supervisor/novnc.out.log
+user=ubuntu
+startretries=3
+
+[group:vnc_and_web]
+programs=check_vnc,novnc
+priority=10
+
