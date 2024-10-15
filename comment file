@@ -1,3 +1,21 @@
-RUN rm -rf /home/ubuntu/.vnc/*.pid \
-           /tmp/.X*-lock \
-    && echo "VNC-related temporary files removed"
+#!/bin/bash
+
+# Clean up any leftover VNC server temporary files that may block startup
+echo "Cleaning up old VNC session files..."
+
+# Remove only VNC-related temporary files (.X*-lock and X11-unix socket files)
+find /tmp -maxdepth 1 -type f -name '.X*-lock' -exec rm -f {} \;
+rm -rf /tmp/.X11-unix/X0
+
+# Remove old VNC process ID files in the user's .vnc directory
+if [ -d /home/ubuntu/.vnc ]; then
+    rm -f /home/ubuntu/.vnc/*.pid
+fi
+
+# Generate machine-id if needed (for dbus or other services)
+if [ ! -f /etc/machine-id ]; then
+    uuidgen > /etc/machine-id
+fi
+
+# Start the main process (supervisord)
+exec "$@"
