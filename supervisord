@@ -1,0 +1,15 @@
+[supervisord]
+nodaemon=true
+user=root
+
+[program:vnc]
+command=gosu ubuntu /opt/TurboVNC/bin/vncserver :0 -fg -wm xfce4-session -geometry 1366x640 -depth 24
+autorestart=true
+stderr_logfile=/var/log/supervisor/vnc.err.log
+stdout_logfile=/var/log/supervisor/vnc.out.log
+
+[program:novnc]
+command=gosu ubuntu bash -c "websockify --web=/usr/lib/novnc 80 localhost:5900"
+autorestart=true
+stderr_logfile=/var/log/supervisor/novnc.err.log
+stdout_logfile=/var/log/supervisor/novnc.out.log
