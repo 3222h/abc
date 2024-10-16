@@ -22,3 +22,21 @@ exec "$@"
 
 
 
+------------------
+[program:myapp]
+command=/usr/local/bin/myapp
+autostart=true                        # Start automatically when supervisord starts
+autorestart=unexpected                # Restart if it exits unexpectedly
+startsecs=5                           # Program must stay running for 5 seconds to be considered successful
+startretries=3                        # Retry up to 3 times if start fails
+exitcodes=0,2                         # Exit codes 0 and 2 are considered "normal"
+stopsignal=TERM                       # Send TERM signal to stop
+stopwaitsecs=10                       # Wait 10 seconds before forcefully killing the process
+stopasgroup=true                      # Stop the whole process group
+killasgroup=true                      # Kill the whole process group if needed
+stdout_logfile=/var/log/myapp.log     # Log stdout to this file
+stdout_logfile_maxbytes=50MB          # Rotate file after 50MB
+stdout_logfile_backups=5              # Keep 5 backups
+stderr_logfile=/var/log/myapp_err.log # Log stderr to this file
+stderr_logfile_maxbytes=50MB          # Rotate file after 50MB
+stderr_logfile_backups=5              # Keep 5 backups
