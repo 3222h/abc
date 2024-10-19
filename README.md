@@ -1,7 +1,7 @@
 ## QuickStart
 
 ### 1. username=ubuntu
-### 2. password=123456
+### 2. password=123456,ubuntu
 
 
 ### 3. build code
