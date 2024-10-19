@@ -64,11 +64,6 @@ RUN apt-get update \
     && apt --reinstall install -y fuse \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Xarchiver for file extraction
-RUN apt-get update && apt-get install -y \
-xarchiver \
-&& rm -rf /var/lib/apt/lists/*
-
 # Install additional utilities
 RUN apt-get update \
     && apt-get install -y \
