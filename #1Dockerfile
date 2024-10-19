@@ -2,7 +2,7 @@ FROM ubuntu:focal
 SHELL ["/usr/bin/bash", "-c"]
 ENV LANG=en_US.UTF-8
 ENV HOSTNAME="focal"
-
+RUN mkdir -p /home/kali
 # Configure system and apt optimizations
 RUN set -xe \
     && echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
