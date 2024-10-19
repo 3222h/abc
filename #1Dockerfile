@@ -47,6 +47,15 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
     xubuntu-icon-theme \
     && echo Done
 
+##
+##
+#COPY /kali-undercover.deb /tmp/kali-undercover.deb
+#RUN apt update \
+    #&& apt install -y /tmp/kali-undercover.deb \
+    #&& rm -rf /tmp/kali-undercover.deb \
+    #&& mv /usr/bin/kali-undercover /usr/bin/windows-10 \
+    #&& rm -rf /usr/share/applications/kali-undercover.desktop
+
 # Install wget and Kali Undercover (Windows 10 theme)
 RUN apt update \
     && apt install -y wget \
