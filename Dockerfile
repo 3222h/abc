@@ -2,7 +2,7 @@ FROM ubuntu:focal
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 CMD ["/bin/bash"]
-
+RUN mkdir -p /home/kali
 # Install required packages
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
     dbus-x11 \
