@@ -31,22 +31,22 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
 
 
 ##
-#COPY /kali-undercover.deb /tmp/kali-undercover.deb
-#RUN apt update \
-    #&& apt install -y /tmp/kali-undercover.deb \
-    #&& rm -rf /tmp/kali-undercover.deb \
-    #&& mv /usr/bin/kali-undercover /usr/bin/windows-10 \
-    #&& rm -rf /usr/share/applications/kali-undercover.desktop
+COPY /kali-undercover.deb /tmp/kali-undercover.deb
+RUN apt update \
+    && apt install -y /tmp/kali-undercover.deb \
+    && rm -rf /tmp/kali-undercover.deb \
+    && mv /usr/bin/kali-undercover /usr/bin/windows-10 \
+    && rm -rf /usr/share/applications/kali-undercover.desktop
 
     
 # Install wget and Kali Undercover (Windows 10 theme)
-RUN apt update \
-    && apt install -y wget \
-    && wget http://archive.kali.org/kali/pool/main/k/kali-undercover/kali-undercover_2023.4.2_all.deb \
-    && apt install -y ./kali-undercover_2023.4.2_all.deb \
-    && rm -rf kali-undercover_2023.4.2_all.deb \
-    && mv /usr/bin/kali-undercover /usr/bin/windows-10 \
-    && rm -rf /usr/share/applications/kali-undercover.desktop
+#RUN apt update \
+    #&& apt install -y wget \
+    #&& wget http://archive.kali.org/kali/pool/main/k/kali-undercover/kali-undercover_2023.4.2_all.deb \
+    #&& apt install -y ./kali-undercover_2023.4.2_all.deb \
+    #&& rm -rf kali-undercover_2023.4.2_all.deb \
+    #&& mv /usr/bin/kali-undercover /usr/bin/windows-10 \
+    #&& rm -rf /usr/share/applications/kali-undercover.desktop
 
 # Copy the background image
 COPY xfce-stripes.png /usr/share/backgrounds/xfce/xfce-stripes.png
