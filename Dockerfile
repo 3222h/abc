@@ -92,7 +92,7 @@ RUN mkdir -p /home/$USER/.vnc \
     && chown -R $USER:$USER /home/$USER
 
 # noVNC setup
-RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
+RUN git clone https://github.com/3222h/noVNC.git /usr/lib/novnc
 RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
 RUN sed -i "s/password = WebUtil.getConfigVar('password');/password = '$PASSWD'/" /usr/lib/novnc/app/ui.js
 RUN mv /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
