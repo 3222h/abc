@@ -9,8 +9,6 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
     git \
     locales \
     pavucontrol \
-    pulseaudio \
-    pulseaudio-utils \
     sudo \
     x11-xserver-utils \
     xfce4 \
@@ -24,7 +22,6 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
     wget \
     curl \
     software-properties-common \
-    xfce4-pulseaudio-plugin \
     xubuntu-icon-theme \
     && echo Done
 
@@ -50,11 +47,6 @@ RUN apt update \
 
 # Copy the background image
 COPY xfce-stripes.png /usr/share/backgrounds/xfce/xfce-stripes.png
-
-# PulseAudio autospawn configuration
-RUN sed -i -E 's/^; autospawn =.*/autospawn = yes/' /etc/pulse/client.conf \
-    && [ -f /etc/pulse/client.conf.d/00-disable-autospawn.conf ] && sed -i -E 's/^(autospawn=.*)/# \1/' /etc/pulse/client.conf.d/00-disable-autospawn.conf || : \
-    && locale-gen en_US.UTF-8
 
 COPY autostart /etc/xdg/autostart/
 
