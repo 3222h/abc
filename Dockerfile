@@ -59,7 +59,7 @@ RUN apt-get update \
 # Install additional utilities
 RUN apt-get update \
     && apt-get install -y \
-        supervisor wget gosu git xauth sudo python3-pip \
+        supervisor gosu xauth python3-pip \
     && apt-get autoclean \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
