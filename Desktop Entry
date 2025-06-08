@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=bash -c "STATE_FILE=\"$HOME/.config/windows-10-state\"; LOG_FILE=\"$HOME/.config/windows-10-autostart.log\"; if [ ! -f \"$STATE_FILE\" ]; then /usr/bin/windows-10 >> \"$LOG_FILE\" 2>&1 && echo \"configured\" > \"$STATE_FILE\" || { echo \"Error: windows-10 failed\" >> \"$LOG_FILE\"; exit 1; }; else echo \"Windows 10 configuration already applied\" >> \"$LOG_FILE\"; fi; sleep 2; /usr/bin/xfwm4 --replace >> \"$LOG_FILE\" 2>&1 || echo \"Error: xfwm4 restart failed\" >> \"$LOG_FILE\""
+Name=Windows 10 Autostart
+Comment=Apply Windows 10 theme/configuration and restart xfwm4 at login
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;
